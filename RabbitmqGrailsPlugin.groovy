@@ -225,7 +225,14 @@ class RabbitmqGrailsPlugin {
             if(beanName.endsWith(LISTENER_CONTAINER_SUFFIX)) {
                 def adapter = new MessageListenerAdapter()
                 def serviceName = beanName - LISTENER_CONTAINER_SUFFIX
-                adapter.delegate = applicationContext.getBean(serviceName)
+                def service = applicationContext.getBean(serviceName)
+                adapter.delegate = service
+
+                // If service responds to raw message remove SimpleMessageConverter
+                if(service.respondsTo('handleMessage', Message)) {
+                    adapter.messageConverter = null
+                }
+
                 bean.messageListener = adapter
                 
                 // Now that the listener is properly configured, we can start it.
