@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter
 import static org.springframework.amqp.core.Binding.DestinationType.QUEUE
 import org.grails.rabbitmq.RabbitConfigurationHolder
+import org.springframework.amqp.core.Message
 
 class RabbitmqGrailsPlugin {
     // the plugin version
