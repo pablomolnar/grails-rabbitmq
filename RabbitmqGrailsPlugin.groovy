@@ -12,6 +12,7 @@ import static org.springframework.amqp.core.Binding.DestinationType.QUEUE
 import org.grails.rabbitmq.RabbitConfigurationHolder
 import org.springframework.amqp.core.Message
 import org.springframework.util.ErrorHandler
+import org.grails.rabbitmq.DefaultErrorHandler
 
 class RabbitmqGrailsPlugin {
     // the plugin version
@@ -87,12 +88,6 @@ class RabbitmqGrailsPlugin {
             }
             adm(RabbitAdmin, rabbitMQConnectionFactory)
 
-            def defaultErrorHandler = new ErrorHandler(){
-                void handleError(Throwable throwable) {
-                    throwable.printStackTrace()
-                }
-            }
-
             Set registeredServices = new HashSet()
             application.serviceClasses.each { service ->
                 def serviceClass = service.clazz
@@ -120,7 +115,6 @@ class RabbitmqGrailsPlugin {
                             connectionFactory = rabbitMQConnectionFactory
                             concurrentConsumers = serviceConcurrentConsumers
                             queueNames = rabbitQueue
-                            errorHandler = defaultErrorHandler
 
                         }
                     } else {
@@ -245,6 +239,7 @@ class RabbitmqGrailsPlugin {
                 }
 
                 bean.messageListener = adapter
+                bean.errorHandler = new DefaultErrorHandler(serviceName)
                 
                 // Now that the listener is properly configured, we can start it.
                 bean.start()
