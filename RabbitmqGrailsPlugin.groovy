@@ -11,10 +11,11 @@ import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter
 import static org.springframework.amqp.core.Binding.DestinationType.QUEUE
 import org.grails.rabbitmq.RabbitConfigurationHolder
 import org.springframework.amqp.core.Message
+import org.springframework.util.ErrorHandler
 
 class RabbitmqGrailsPlugin {
     // the plugin version
-    def version = "0.3.4-ML"
+    def version = "0.3.6-ML"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.2 > *"
     // the other plugins this plugin depends on
@@ -85,6 +86,13 @@ class RabbitmqGrailsPlugin {
                 connectionFactory = rabbitMQConnectionFactory
             }
             adm(RabbitAdmin, rabbitMQConnectionFactory)
+
+            def defaultErrorHandler = new ErrorHandler(){
+                void handleError(Throwable throwable) {
+                    throwable.printStackTrace()
+                }
+            }
+
             Set registeredServices = new HashSet()
             application.serviceClasses.each { service ->
                 def serviceClass = service.clazz
@@ -112,6 +120,8 @@ class RabbitmqGrailsPlugin {
                             connectionFactory = rabbitMQConnectionFactory
                             concurrentConsumers = serviceConcurrentConsumers
                             queueNames = rabbitQueue
+                            errorHandler = defaultErrorHandler
+
                         }
                     } else {
                         log.info("Not listening to ${service.clazz} it is disabled in configuration")
