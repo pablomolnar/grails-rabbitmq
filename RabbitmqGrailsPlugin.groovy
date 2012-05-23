@@ -16,7 +16,7 @@ import org.grails.rabbitmq.DefaultErrorHandler
 
 class RabbitmqGrailsPlugin {
     // the plugin version
-    def version = "0.3.6-ML"
+    def version = "0.3.7-ML"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.2 > *"
     // the other plugins this plugin depends on
